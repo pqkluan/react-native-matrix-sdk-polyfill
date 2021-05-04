@@ -1,1 +1,1 @@
-# react-native-matrix-sdk-polyfill-
+# react-native-matrix-sdk-polyfill

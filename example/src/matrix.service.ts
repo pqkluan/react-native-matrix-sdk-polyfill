@@ -1,9 +1,5 @@
-import * as sdk from 'react-native-matrix-sdk-polyfill';
-
-export interface Room {
-  roomId: string;
-  name: string;
-}
+import * as sdk from 'matrix-js-sdk';
+import {Room} from 'matrix-js-sdk';
 
 class _MatrixService {
   private _client;
@@ -44,22 +40,23 @@ class _MatrixService {
     await this._client.logout();
   }
 
-  public async getUserProfile(): Promise<{
-    id: string;
-    displayName?: string;
-    avatarUrl?: string;
-  }> {
-    const id: string = await this._client.getUserId();
+  public async getUserProfile(): Promise<
+    | undefined
+    | {
+        id: string;
+        displayName?: string;
+        avatarUrl?: string;
+      }
+  > {
+    const id = this._client.getUserId();
+    if (!id) return;
 
-    const profile: {
-      displayname?: string;
-      avatar_url?: string;
-    } = (await this._client.getProfileInfo(id)) ?? {};
+    const profile = await this._client.getProfileInfo(id);
 
     return {
       id,
-      displayName: profile.displayname,
-      avatarUrl: profile.avatar_url,
+      displayName: profile?.displayname,
+      avatarUrl: profile?.avatar_url,
     };
   }
 
@@ -80,20 +77,15 @@ class _MatrixService {
   }
 
   public async listJoinedRoomIds(): Promise<string[]> {
-    const result: {
+    const result = ((await this._client.getJoinedRooms()) as unknown) as {
       joined_rooms: string[];
-    } = await this._client.getJoinedRooms();
+    };
 
     return result.joined_rooms;
   }
 
-  public async getRoom(roomId: string): Promise<Room> {
-    const room = await this._client.getRoom(roomId);
-
-    return {
-      roomId: room.id,
-      name: room.name,
-    };
+  public getRoom(roomId: string): Room | null {
+    return this._client.getRoom(roomId);
   }
 }
 

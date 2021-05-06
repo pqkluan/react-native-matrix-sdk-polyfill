@@ -1,7 +1,8 @@
+import {Room} from 'matrix-js-sdk';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
-import {matrixService, Room} from './matrix.service';
+import {matrixService} from './matrix.service';
 
 interface Props {
   roomId: string;
@@ -13,7 +14,8 @@ export function ChatRoom(props: Props): JSX.Element {
   const [room, setRoom] = useState<Room>();
 
   useEffect(() => {
-    matrixService.getRoom(roomId).then(setRoom);
+    const r = matrixService.getRoom(roomId);
+    if (r) setRoom(r);
   }, [roomId]);
 
   if (!room) {

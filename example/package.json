@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "matrix-js-sdk": "^10.0.0",
     "react": "17.0.1",
     "react-native": "0.64.0",
     "react-native-matrix-sdk-polyfill": "../"
@@ -20,6 +21,7 @@
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
     "@types/jest": "^26.0.20",
+    "@types/matrix-js-sdk": "^9.2.5",
     "@types/react-native": "^0.64.0",
     "@types/react-test-renderer": "^16.9.2",
     "babel-jest": "^26.6.3",

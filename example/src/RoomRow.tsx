@@ -1,7 +1,8 @@
+import {Room} from 'matrix-js-sdk';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import {matrixService, Room} from './matrix.service';
+import {matrixService} from './matrix.service';
 
 interface Props {
   roomId: string;
@@ -14,7 +15,8 @@ export function RoomRow(props: Props): JSX.Element {
   const [room, setRoom] = useState<Room>();
 
   useEffect(() => {
-    matrixService.getRoom(roomId).then(setRoom);
+    const r = matrixService.getRoom(roomId);
+    if (r) setRoom(r);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

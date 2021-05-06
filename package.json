@@ -2,9 +2,9 @@
   "name": "react-native-matrix-sdk-polyfill",
   "version": "0.0.1",
   "description": "matrix-js-sdk polyfilled version for react-native",
-  "main": "src/index.ts",
+  "main": "index.js",
   "files": [
-    "src/index.ts"
+    "index.js"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,11 +25,14 @@
     "url": "https://github.com/pqkluan/react-native-matrix-sdk-polyfill/issues"
   },
   "homepage": "https://github.com/pqkluan/react-native-matrix-sdk-polyfill#readme",
-  "devDependencies": {
+  "peerDependencies": {
+    "matrix-js-sdk": "*",
+    "@types/matrix-js-sdk": "*"
+  },
+  "dependencies": {
     "buffer": "^6.0.3",
     "events": "^3.3.0",
     "fbemitter": "^3.0.0",
-    "matrix-js-sdk": "10.0.0",
     "unorm": "^1.6.0",
     "url": "^0.11.0"
   }

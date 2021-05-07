@@ -1,5 +1,6 @@
+import { useTheme } from '@react-navigation/native';
 import React, { useCallback, useRef, useState } from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text } from 'react-native';
 
 import { useAppStore } from 'src/app-state';
 import { Button } from 'src/components/shared/Button';
@@ -11,6 +12,8 @@ interface Props {}
 
 export function LoginScreen(props: Props): JSX.Element {
   const {} = props;
+
+  const { colors } = useTheme();
 
   const setUserId = useAppStore(useCallback((state) => state.setUserId, []));
 
@@ -62,7 +65,9 @@ export function LoginScreen(props: Props): JSX.Element {
           onSubmitEditing={handleSubmit}
         />
 
-        {!!errorMsg && <Text style={styles.error}>{errorMsg}</Text>}
+        {!!errorMsg && (
+          <Text style={[styles.error, { color: colors.notification }]}>{errorMsg}</Text>
+        )}
 
         <Button
           disabled={!username || !password}
@@ -84,7 +89,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   error: {
-    color: '#B00020',
     paddingTop: 4,
     textAlign: 'center',
   },

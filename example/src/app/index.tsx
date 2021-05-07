@@ -21,6 +21,7 @@ const MyTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: cornflowerblue,
+    notification: '#FF6347',
   },
 };
 

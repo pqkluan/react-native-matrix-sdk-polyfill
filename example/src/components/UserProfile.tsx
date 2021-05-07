@@ -1,14 +1,16 @@
+import { useTheme } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useAppStore } from 'src/app-state';
+import { Avatar } from 'src/components/Avatar';
+import { Button } from 'src/components/shared/Button';
+import { Card } from 'src/components/shared/Card';
 import { matrixService } from 'src/services/matrix.service';
 
 interface Props {}
 
-export function UserProfile(props: Props): JSX.Element {
-  const {} = props;
-
+function useProfileState() {
   const setUserId = useAppStore(useCallback((state) => state.setUserId, []));
 
   const [profile, setProfile] = useState<{
@@ -28,50 +30,61 @@ export function UserProfile(props: Props): JSX.Element {
     setUserId,
   ]);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.textWrap}>
-        <Text>
-          {'Logged in as '}
-          <Text style={styles.highlight}>{`${profile?.displayName} (${profile?.id})`}</Text>
-        </Text>
-      </View>
+  return {
+    profile,
+    handleLogout,
+  };
+}
 
-      <TouchableOpacity style={styles.logoutWrap} onPress={handleLogout}>
-        <Text style={styles.logout}>{'Logout?'}</Text>
-      </TouchableOpacity>
-    </View>
+export function UserProfile(props: Props): JSX.Element {
+  const {} = props;
+
+  const { colors } = useTheme();
+
+  const { handleLogout, profile } = useProfileState();
+
+  return (
+    <Card style={styles.container}>
+      <Avatar />
+
+      <View style={styles.subContainer}>
+        <Text style={[styles.highlight, { color: colors.primary }]}>{profile?.displayName}</Text>
+        <Text>{profile?.id}</Text>
+
+        <View style={styles.logoutButtonWrap}>
+          <Button
+            style={[styles.logoutButton, { backgroundColor: colors.notification }]}
+            title={'Logout'}
+            onPress={handleLogout}
+          />
+        </View>
+      </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 4,
     flexDirection: 'row',
-    margin: 16,
-    padding: 8,
-    shadowColor: '#000000',
-    shadowOffset: { height: 2, width: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
-  textWrap: {
+  subContainer: {
     flex: 1,
   },
   highlight: {
-    color: '#003e89',
     fontWeight: '500',
   },
-  logoutWrap: {
-    backgroundColor: '#B00020',
-    borderRadius: 4,
+  logoutButton: {
+    height: 18,
+    marginTop: 4,
     paddingHorizontal: 4,
-    paddingVertical: 2,
   },
-  logout: {
-    color: '#FFFFFF',
-    fontWeight: '500',
+  logoutButtonWrap: {
+    bottom: 0,
+    flexDirection: 'row',
+    position: 'absolute',
+    right: 0,
   },
 });

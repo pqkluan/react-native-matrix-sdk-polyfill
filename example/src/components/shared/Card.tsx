@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 type Props = React.PropsWithChildren<{
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 }>;
 
 export function Card(props: Props): JSX.Element {

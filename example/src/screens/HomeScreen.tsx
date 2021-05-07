@@ -14,6 +14,7 @@ export function HomeScreen(props: Props): JSX.Element {
       <StatusBar barStyle={'light-content'} />
 
       <UserProfile />
+
       <RoomsList />
     </>
   );

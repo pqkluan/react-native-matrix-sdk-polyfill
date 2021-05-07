@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RawEvent, Room } from 'matrix-js-sdk';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 
 import { RootStackParamList } from 'src/navigation/screens';
 import { matrixService } from 'src/services/matrix.service';
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export function ChatRoomScreen(props: Props): JSX.Element {
-  const { route } = props;
+  const { route, navigation } = props;
   const { roomId } = route.params;
 
   const [room, setRoom] = useState<Room>();
@@ -24,29 +24,36 @@ export function ChatRoomScreen(props: Props): JSX.Element {
 
   useEffect(() => {
     const r = matrixService.getRoom(roomId);
-    if (r) setRoom(r);
+    if (r) {
+      navigation.setOptions({ title: r.name });
+      setRoom(r);
+    }
 
     matrixService.listenToRoomEvents(roomId, (rawEvent) => {
       setMsgs((existsMsgs) => [...existsMsgs, rawEvent]);
     });
-  }, [roomId]);
+  }, [navigation, roomId]);
 
   if (!room) return <View />;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{room.name}</Text>
-      {room
-        .getLiveTimeline()
-        .getEvents()
-        .map(({ event }) => {
+    <>
+      <StatusBar barStyle={'light-content'} />
+
+      <View style={styles.container}>
+        <Text style={styles.title}>{room.name}</Text>
+        {room
+          .getLiveTimeline()
+          .getEvents()
+          .map(({ event }) => {
+            return <Text key={event.event_id}>{event.content.body}</Text>;
+          })}
+
+        {msgs.map((event) => {
           return <Text key={event.event_id}>{event.content.body}</Text>;
         })}
-
-      {msgs.map((event) => {
-        return <Text key={event.event_id}>{event.content.body}</Text>;
-      })}
-    </View>
+      </View>
+    </>
   );
 }
 

@@ -14,20 +14,28 @@ import { LoginScreen } from 'src/screens/LoginScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const cornflowerblue = '#2568BA';
+
 const MyTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#2568BA',
+    primary: cornflowerblue,
   },
 };
 
 const rootOptions: NativeStackNavigationOptions = {
   headerBackTitleVisible: false,
   stackAnimation: Platform.select({ ios: 'default', android: 'slide_from_right' }),
+
+  headerStyle: {
+    backgroundColor: cornflowerblue,
+  },
+  headerTintColor: '#FFFFFF',
 };
 
 const mainOptions: NativeStackNavigationOptions = {
+  title: 'Conversations',
   headerHideBackButton: true,
   stackAnimation: Platform.select({ ios: 'fade', android: 'slide_from_right' }),
   ...Platform.select({ ios: { replaceAnimation: 'push' }, android: {} }),
@@ -40,11 +48,15 @@ export default function App(): JSX.Element {
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator screenOptions={rootOptions}>
         {!userId ? (
-          <Stack.Screen component={LoginScreen} name={'Login'} />
+          <Stack.Screen
+            component={LoginScreen}
+            name={'Login'}
+            options={{ title: 'Matrix Client' }}
+          />
         ) : (
           <>
             <Stack.Screen component={HomeScreen} name={'Home'} options={mainOptions} />
-            <Stack.Screen component={ChatRoomScreen} name={'ChatRoom'} />
+            <Stack.Screen component={ChatRoomScreen} name={'ChatRoom'} options={{ title: '' }} />
           </>
         )}
       </Stack.Navigator>

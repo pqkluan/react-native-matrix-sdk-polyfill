@@ -1,5 +1,5 @@
 import * as sdk from 'matrix-js-sdk';
-import {Room, RawEvent} from 'matrix-js-sdk';
+import { Room, RawEvent } from 'matrix-js-sdk';
 
 class _MatrixService {
   private _client;
@@ -61,15 +61,12 @@ class _MatrixService {
   }
 
   onSyncCompleted(callback: () => void) {
-    this._client.once(
-      'sync',
-      (state: string) => state === 'PREPARED' && callback(),
-    );
+    this._client.once('sync', (state: string) => state === 'PREPARED' && callback());
   }
 
   public async startClient() {
     // TODO: research params
-    await this._client.startClient({initialSyncLimit: 10});
+    await this._client.startClient({ initialSyncLimit: 10 });
   }
 
   public stopClient(): void {
@@ -88,10 +85,7 @@ class _MatrixService {
     return this._client.getRoom(roomId);
   }
 
-  public listenToRoomEvents(
-    roomId: string,
-    callback: (e: sdk.RawEvent) => void,
-  ): () => void {
+  public listenToRoomEvents(roomId: string, callback: (e: sdk.RawEvent) => void): () => void {
     const listener = (event: sdk.MatrixEvent) => {
       if (event.getType() !== 'm.room.message') return;
       const rawEvent = event.event as RawEvent;

@@ -1,0 +1,128 @@
+{
+  "folders": [
+    {
+      "name": "react-native-matrix-sdk-polyfill",
+      "path": ".."
+    },
+    {
+      "name": "example",
+      "path": "."
+    }
+  ],
+  // "launch": {}, // TODO: support app launch using vscode debug in the future
+  // https://github.com/microsoft/vscode-cpptools/issues/1201
+  "settings": {
+    "files.exclude": {
+      "example": true
+    },
+
+    // Force default encoding to prevent broken character issues
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": false,
+
+    "search.exclude": {
+      "/node_modules": true,
+      "/ios/*/**": true,
+      "*.lock": true
+      // The more we blacklist, the better the search performance
+    },
+
+    "eslint.format.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.packageManager": "yarn",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.tslint": true
+    },
+
+    // Set editor rules to be the same with Prettier formatting rules
+    "editor.rulers": [100], // A line on the left, should be the same as character limit in lint config
+    "editor.tabSize": 2, // 1 tab equals 2 space
+    "editor.insertSpaces": true, // Use spaces for tab
+    "editor.formatOnSave": true,
+
+    // Tweaking vscode behavior
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "typescript.updateImportsOnFileMove.enabled": "never",
+
+    "typescript.validate.enable": true,
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+
+    // Disable emmet suggestion
+    "emmet.showExpandedAbbreviation": "never",
+
+    // Set default formatter for JSON file
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+
+    // Auto-close-tag plugin
+    "auto-close-tag.SublimeText3Mode": true, // complete end tag on </
+    "auto-close-tag.activationOnLanguage": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+
+    // Auto-rename-tag plugin
+    "auto-rename-tag.activationOnLanguage": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+
+    // Git lens config
+    "gitlens.defaultDateStyle": "absolute",
+    "gitlens.defaultDateFormat": "YYYY/MM/dd HH:mm",
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.blame.heatmap.enabled": false,
+    "gitlens.hovers.annotations.enabled": false,
+    "gitlens.hovers.enabled": false,
+    "gitlens.mode.statusBar.enabled": false,
+    "gitlens.blame.dateFormat": "dd/mm/yyyy",
+    "git.autofetch": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "window.zoomLevel": 0,
+    "cSpell.words": ["autofetch", "esbenp", "fira", "gitlens", "heatmap"]
+  },
+  "extensions": {
+    "recommendations": [
+      // Linting
+      "christian-kohler.path-intellisense",
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "streetsidesoftware.code-spell-checker",
+
+      // RN
+      "msjsdiag.vscode-react-native",
+
+      // QoL
+      "formulahendry.auto-complete-tag",
+      "chakrounanas.turbo-console-log",
+      "folke.vscode-monorepo-workspace",
+      "eamodio.gitlens",
+
+      // Look & feel
+      "teabyii.ayu",
+      "pkief.material-icon-theme",
+      "naumovs.color-highlight",
+      "2gua.rainbow-brackets",
+      "wayou.vscode-todo-highlight"
+    ]
+  }
+}

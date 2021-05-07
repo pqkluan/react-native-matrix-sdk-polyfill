@@ -7,9 +7,9 @@ interface AppState {
   setRoomId: (roomId?: string) => void;
 }
 
-export const useAppStore = create<AppState>(set => ({
+export const useAppStore = create<AppState>((set) => ({
   userId: undefined,
   roomId: undefined,
-  setUserId: userId => set(() => ({userId})),
-  setRoomId: roomId => set(() => ({roomId})),
+  setUserId: (userId) => set(() => ({ userId })),
+  setRoomId: (roomId) => set(() => ({ roomId })),
 }));

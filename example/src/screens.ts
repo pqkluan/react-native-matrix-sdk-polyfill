@@ -7,5 +7,5 @@ export const screens = {
 export type RootStackParamList = {
   [screens.Login]: undefined;
   [screens.Home]: undefined;
-  [screens.ChatRoom]: {roomId: string};
+  [screens.ChatRoom]: { roomId: string };
 };

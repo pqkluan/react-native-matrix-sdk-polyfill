@@ -1,15 +1,15 @@
-import React, {useCallback, useRef, useState} from 'react';
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
-import {useAppStore} from '../app-state';
+import React, { useCallback, useRef, useState } from 'react';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import {matrixService} from '../services/matrix.service';
+import { useAppStore } from '../app-state';
+import { matrixService } from '../services/matrix.service';
 
 interface Props {}
 
 export function LoginScreen(props: Props): JSX.Element {
   const {} = props;
 
-  const setUserId = useAppStore(useCallback(state => state.setUserId, []));
+  const setUserId = useAppStore(useCallback((state) => state.setUserId, []));
 
   const passwordInput = useRef<TextInput>(null);
 
@@ -17,15 +17,10 @@ export function LoginScreen(props: Props): JSX.Element {
   const [password, setPassword] = useState<string>('123456');
   const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const focusPasswordInput = useCallback(
-    () => passwordInput?.current?.focus(),
-    [],
-  );
+  const focusPasswordInput = useCallback(() => passwordInput?.current?.focus(), []);
 
   const handleSubmit = useCallback(async () => {
-    if (!username || !password) {
-      return;
-    }
+    if (!username || !password) return;
 
     try {
       setErrorMsg('');
@@ -35,11 +30,7 @@ export function LoginScreen(props: Props): JSX.Element {
 
       setUserId(result.user_id);
     } catch (error) {
-      setErrorMsg(
-        typeof error === 'string'
-          ? error
-          : error?.message ?? 'Something went wrong...',
-      );
+      setErrorMsg(typeof error === 'string' ? error : error?.message ?? 'Something went wrong...');
     }
   }, [password, setUserId, username]);
 
@@ -49,8 +40,8 @@ export function LoginScreen(props: Props): JSX.Element {
       <Text style={{}}>{`Homeserver: ${matrixService.URL}`}</Text>
 
       <TextInput
-        style={styles.input}
         placeholder={'@abc:pqkluan.local'}
+        style={styles.input}
         value={username}
         onChangeText={setUserName}
         onSubmitEditing={focusPasswordInput}
@@ -58,12 +49,12 @@ export function LoginScreen(props: Props): JSX.Element {
 
       <TextInput
         ref={passwordInput}
-        style={styles.input}
         placeholder={'Password'}
+        style={styles.input}
         value={password}
+        secureTextEntry
         onChangeText={setPassword}
         onSubmitEditing={handleSubmit}
-        secureTextEntry
       />
 
       {!!errorMsg && (
@@ -73,10 +64,10 @@ export function LoginScreen(props: Props): JSX.Element {
       )}
 
       <Button
-        onPress={handleSubmit}
+        color={'#2668ba'}
         disabled={!username || !password}
         title={'Login'}
-        color={'#2668ba'}
+        onPress={handleSubmit}
       />
     </View>
   );
@@ -88,16 +79,16 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   input: {
+    borderColor: '#2668ba',
+    borderRadius: 4,
+    borderWidth: 1,
     marginTop: 8,
     padding: 8,
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: '#2668ba',
   },
   errorWrap: {
-    marginTop: 8,
     backgroundColor: '#B00020',
     borderRadius: 4,
+    marginTop: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },

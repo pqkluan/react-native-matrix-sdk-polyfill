@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {matrixService} from '../services/matrix.service';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import {RoomRow} from './RoomRow';
+import { matrixService } from '../services/matrix.service';
+import { RoomRow } from './RoomRow';
 
 interface Props {}
 
@@ -26,10 +26,7 @@ export function RoomsList(props: Props): JSX.Element {
   return (
     <View style={styles.container}>
       <FlatList
-        keyExtractor={item => item}
-        contentContainerStyle={styles.flatList}
-        data={roomIds}
-        refreshing={!isReady}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListEmptyComponent={() =>
           isReady ? (
             <View style={styles.errorWrap}>
@@ -38,8 +35,11 @@ export function RoomsList(props: Props): JSX.Element {
           ) : null
         }
         ListHeaderComponent={<Text style={styles.title}>{'Rooms'}</Text>}
-        renderItem={({item}) => <RoomRow roomId={item} />}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        contentContainerStyle={styles.flatList}
+        data={roomIds}
+        keyExtractor={(item) => item}
+        refreshing={!isReady}
+        renderItem={({ item }) => <RoomRow roomId={item} />}
       />
     </View>
   );
@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   errorWrap: {
-    marginTop: 8,
     backgroundColor: '#B00020',
     borderRadius: 4,
+    marginTop: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
@@ -61,20 +61,20 @@ const styles = StyleSheet.create({
   },
   flatList: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 8,
+    borderRadius: 4,
     margin: 8,
 
+    paddingHorizontal: 8,
     shadowColor: '#000000',
-    shadowOffset: {height: 2, width: 2},
-    shadowRadius: 4,
+    shadowOffset: { height: 2, width: 2 },
     shadowOpacity: 0.2,
-    borderRadius: 4,
+    shadowRadius: 4,
   },
   title: {
-    marginTop: 16,
-    marginBottom: 8,
     color: '#2568ba',
     fontSize: 18,
+    marginBottom: 8,
+    marginTop: 16,
   },
   separator: {
     backgroundColor: '#6495ed',

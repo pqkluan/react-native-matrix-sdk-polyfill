@@ -1,0 +1,98 @@
+root: true
+parser: '@typescript-eslint/parser'
+extends:
+  - plugin:import/errors
+  - plugin:import/warnings
+  - plugin:import/typescript
+  - '@react-native-community'
+
+plugins:
+  - '@typescript-eslint'
+
+env:
+  react-native/react-native: true
+
+globals:
+  JSX: true
+  Detox: true
+
+settings:
+  import/ignore:
+    - react-native
+  import/resolver:
+    babel-module:
+      extensions:
+        - .ios.js
+        - .android.js
+        - .js
+        - .json
+        - .ts
+        - .tsx
+rules:
+  # Eslint rules
+  no-unused-vars: off # Duplicate with tsc check
+  no-bitwise: off # We use bitwise so it is not a mistake
+  curly:
+    - error
+    - multi-or-nest # Flexible braces rules depend on no. of lines after condition statement
+  eqeqeq:
+    - error
+    - smart # Force === for comparison, except == for soft null/undefined check.
+  func-names:
+    - error
+    - as-needed # Only required function name as needed
+  jsx-quotes:
+    - error
+    - prefer-single # Force using single quote when passing string as jsx prop
+
+  # React rules
+  react/jsx-sort-props:
+    - error
+    - ignoreCase: false
+      reservedFirst: true
+      noSortAlphabetically: false
+      shorthandFirst: false
+      shorthandLast: true
+      callbacksLast: true
+  react/jsx-curly-brace-presence:
+    - error
+    - always # Force jsx content & props to be always wrapped in bracelet
+
+  # React Native rules
+  react-native/no-unused-styles: error
+  react-native/sort-styles:
+    - error
+    - asc
+    - ignoreClassNames: true
+  react-native/split-platform-components: error
+  react-native/no-inline-styles: off
+  react-native/no-color-literals: off
+  react-native/no-single-element-style-arrays: error
+
+  # Typescript rules
+  '@typescript-eslint/no-unused-vars': off
+
+  # Import path rules
+  import/no-cycle: off
+  import/namespace:
+    - error
+    - allowComputed: false
+  import/no-useless-path-segments:
+    - error
+    - noUselessIndex: true
+  import/order:
+    - error
+    - alphabetize:
+        order: asc
+        caseInsensitive: true
+      newlines-between: always
+      groups:
+        - - builtin
+          - external
+        - internal
+        - - parent
+          - sibling
+          - index
+  import/newline-after-import:
+    - error
+    - count: 1

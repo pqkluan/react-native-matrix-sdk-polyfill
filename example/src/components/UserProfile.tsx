@@ -1,14 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useAppStore} from '../app-state';
+import {matrixService} from '../services/matrix.service';
 
-import {matrixService} from './matrix.service';
-
-interface Props {
-  onLogoutSuccess: () => void;
-}
+interface Props {}
 
 export function UserProfile(props: Props): JSX.Element {
-  const {onLogoutSuccess} = props;
+  const {} = props;
+
+  const setUserId = useAppStore(useCallback(state => state.setUserId, []));
 
   const [profile, setProfile] = useState<{
     id: string;
@@ -23,10 +23,10 @@ export function UserProfile(props: Props): JSX.Element {
     })();
   }, []);
 
-  const handleLogout = useCallback(async () => {
-    await matrixService.logout();
-    onLogoutSuccess();
-  }, [onLogoutSuccess]);
+  const handleLogout = useCallback(
+    () => matrixService.logout().then(() => setUserId(undefined)),
+    [setUserId],
+  );
 
   return (
     <View style={styles.container}>

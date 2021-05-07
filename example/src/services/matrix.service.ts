@@ -1,5 +1,5 @@
 import * as sdk from 'matrix-js-sdk';
-import {Room} from 'matrix-js-sdk';
+import {Room, RawEvent} from 'matrix-js-sdk';
 
 class _MatrixService {
   private _client;
@@ -86,6 +86,22 @@ class _MatrixService {
 
   public getRoom(roomId: string): Room | null {
     return this._client.getRoom(roomId);
+  }
+
+  public listenToRoomEvents(
+    roomId: string,
+    callback: (e: sdk.RawEvent) => void,
+  ): () => void {
+    const listener = (event: sdk.MatrixEvent) => {
+      if (event.getType() !== 'm.room.message') return;
+      const rawEvent = event.event as RawEvent;
+      if (rawEvent.room_id !== roomId) return;
+
+      callback(rawEvent);
+    };
+
+    this._client.on('Room.timeline', listener);
+    return () => this._client.removeListener('Room.timeline', listener);
   }
 }
 

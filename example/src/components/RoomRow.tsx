@@ -1,18 +1,25 @@
+import {useNavigation} from '@react-navigation/core';
 import {Room} from 'matrix-js-sdk';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-
-import {matrixService} from './matrix.service';
+import {screens} from '../screens';
+import {matrixService} from '../services/matrix.service';
 
 interface Props {
   roomId: string;
-  onPress: (roomId: string) => void;
 }
 
 export function RoomRow(props: Props): JSX.Element {
-  const {roomId, onPress} = props;
+  const {roomId} = props;
+
+  const navigation = useNavigation();
 
   const [room, setRoom] = useState<Room>();
+
+  const handlePress = useCallback(() => {
+    // TODO: strong type
+    navigation.navigate(screens.ChatRoom, {roomId});
+  }, [navigation, roomId]);
 
   useEffect(() => {
     const r = matrixService.getRoom(roomId);
@@ -25,7 +32,7 @@ export function RoomRow(props: Props): JSX.Element {
   }
 
   return (
-    <TouchableOpacity onPress={() => onPress(roomId)} style={styles.container}>
+    <TouchableOpacity onPress={handlePress} style={styles.container}>
       <Text>{room.name}</Text>
     </TouchableOpacity>
   );

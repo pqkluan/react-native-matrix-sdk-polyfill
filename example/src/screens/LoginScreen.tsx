@@ -1,13 +1,15 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
-import {matrixService} from './matrix.service';
+import {useAppStore} from '../app-state';
 
-interface Props {
-  onLoginSuccess: () => void;
-}
+import {matrixService} from '../services/matrix.service';
 
-export function LoginForm(props: Props): JSX.Element {
-  const {onLoginSuccess} = props;
+interface Props {}
+
+export function LoginScreen(props: Props): JSX.Element {
+  const {} = props;
+
+  const setUserId = useAppStore(useCallback(state => state.setUserId, []));
 
   const passwordInput = useRef<TextInput>(null);
 
@@ -28,9 +30,10 @@ export function LoginForm(props: Props): JSX.Element {
     try {
       setErrorMsg('');
 
-      await matrixService.login(username, password);
+      const result = await matrixService.login(username, password);
+      if (!result) throw new Error('Something went wrong...');
 
-      onLoginSuccess();
+      setUserId(result.user_id);
     } catch (error) {
       setErrorMsg(
         typeof error === 'string'
@@ -38,10 +41,11 @@ export function LoginForm(props: Props): JSX.Element {
           : error?.message ?? 'Something went wrong...',
       );
     }
-  }, [onLoginSuccess, password, username]);
+  }, [password, setUserId, username]);
 
   return (
     <View style={styles.container}>
+      <Text>{'Matrix Client'}</Text>
       <Text style={{}}>{`Homeserver: ${matrixService.URL}`}</Text>
 
       <TextInput

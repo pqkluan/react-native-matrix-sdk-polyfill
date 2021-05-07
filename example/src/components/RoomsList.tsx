@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {matrixService} from '../services/matrix.service';
 
-import {matrixService} from './matrix.service';
 import {RoomRow} from './RoomRow';
 
-interface Props {
-  onSelectRoomId: (roomId: string) => void;
-}
+interface Props {}
 
 export function RoomsList(props: Props): JSX.Element {
-  const {onSelectRoomId} = props;
+  const {} = props;
 
   const [roomIds, setRoomIds] = useState<string[]>([]);
   const [isReady, setIsReady] = useState<boolean>(false);
@@ -40,9 +38,7 @@ export function RoomsList(props: Props): JSX.Element {
           ) : null
         }
         ListHeaderComponent={<Text style={styles.title}>{'Rooms'}</Text>}
-        renderItem={({item}) => (
-          <RoomRow roomId={item} onPress={onSelectRoomId} />
-        )}
+        renderItem={({item}) => <RoomRow roomId={item} />}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </View>

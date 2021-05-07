@@ -6,7 +6,7 @@ import { matrixService } from 'src/services/matrix.service';
 
 interface Props {}
 
-export function UserProfile(props: Props): JSX.Element {
+export function Card(props: Props): JSX.Element {
   const {} = props;
 
   const setUserId = useAppStore(useCallback((state) => state.setUserId, []));

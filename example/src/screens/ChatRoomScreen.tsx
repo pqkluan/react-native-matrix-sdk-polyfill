@@ -4,8 +4,8 @@ import { RawEvent, Room } from 'matrix-js-sdk';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { RootStackParamList } from '../screens';
-import { matrixService } from '../services/matrix.service';
+import { RootStackParamList } from 'src/navigation/screens';
+import { matrixService } from 'src/services/matrix.service';
 
 type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'ChatRoom'>;
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ChatRoom'>;

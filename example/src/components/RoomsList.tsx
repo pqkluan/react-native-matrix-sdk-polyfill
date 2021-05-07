@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { matrixService } from '../services/matrix.service';
+import { matrixService } from 'src/services/matrix.service';
+
 import { RoomRow } from './RoomRow';
 
 interface Props {}

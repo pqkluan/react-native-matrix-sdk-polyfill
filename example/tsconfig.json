@@ -40,6 +40,7 @@
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
+      "src/*": ["src/*"],
       "matrix-js-sdk": ["./node_modules/@types/matrix-js-sdk/index.d.ts"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */

@@ -37,7 +37,7 @@ export function LoginScreen(props: Props): JSX.Element {
   return (
     <View style={styles.container}>
       <Text>{'Matrix Client'}</Text>
-      <Text style={{}}>{`Homeserver: ${matrixService.URL}`}</Text>
+      <Text>{`Homeserver: ${matrixService.URL}`}</Text>
 
       <TextInput
         placeholder={'@abc:pqkluan.local'}
@@ -75,12 +75,14 @@ export function LoginScreen(props: Props): JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2,
+    margin: 16,
     padding: 16,
-    paddingTop: 8,
   },
   input: {
     borderColor: '#2668ba',
-    borderRadius: 4,
+    borderRadius: 2,
     borderWidth: 1,
     marginTop: 8,
     padding: 8,

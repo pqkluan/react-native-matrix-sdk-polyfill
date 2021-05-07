@@ -65,7 +65,6 @@ class _MatrixService {
   }
 
   public async startClient() {
-    // TODO: research params
     await this._client.startClient({ initialSyncLimit: 10 });
   }
 

@@ -1,5 +1,6 @@
 package com.example;
 
+import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -11,5 +12,11 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "example";
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    // https://github.com/software-mansion/react-native-screens#android
+    super.onCreate(null);
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { RoomsList } from '../components/RoomsList';
-import { UserProfile } from '../components/UserProfile';
+import { RoomsList } from 'src/components/RoomsList';
+import { UserProfile } from 'src/components/UserProfile';
 
 interface Props {}
 

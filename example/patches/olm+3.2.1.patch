@@ -1,0 +1,22 @@
+diff --git a/node_modules/olm/package.json b/node_modules/olm/package.json
+index c479a98..12a9092 100644
+--- a/node_modules/olm/package.json
++++ b/node_modules/olm/package.json
+@@ -2,7 +2,7 @@
+   "name": "olm",
+   "version": "3.2.1",
+   "description": "An implementation of the Double Ratchet cryptographic ratchet",
+-  "main": "olm.js",
++  "main": "olm_legacy.js",
+   "files": [
+     "olm.js",
+     "olm.wasm",
+@@ -29,5 +29,8 @@
+   "homepage": "https://github.com/matrix-org/olm#readme",
+   "devDependencies": {
+     "jasmine-node": "^1.14.5"
++  },
++  "browser": {
++    "fs":"react-native-level-fs"
+   }
+ }

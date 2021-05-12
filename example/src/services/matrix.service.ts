@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as sdk from 'matrix-js-sdk';
 import { Room, RawEvent, MemoryStore } from 'matrix-js-sdk';
+import { decodeRecoveryKey } from 'matrix-js-sdk/lib/crypto/recoverykey';
 import request from 'xmlhttp-request';
 
 import AsyncCryptoStore from './AsyncCryptoStore';
@@ -55,6 +56,7 @@ class SyncStorage {
 class _MatrixService {
   private _client;
   private TAG = 'MatrixService' as const;
+  //   public URL = 'https://matrix-client.matrix.org' as const;
   public URL = 'http://localhost:8008' as const;
 
   constructor() {
@@ -77,57 +79,56 @@ class _MatrixService {
         user_id: string;
       }
   > {
-    const result = await this._client.loginWithPassword(username, password);
+    // const result = await this._client.loginWithPassword(username, password);
 
     const syncStorage = new SyncStorage();
     await syncStorage.init();
     const webStorageSessionStore = new (sdk as any).WebStorageSessionStore(syncStorage);
 
-    interface ISecretStorageKeyInfo {
-      passphrase?: {
-        algorithm: 'm.pbkdf2';
-        iterations: number;
-        salt: string;
-      };
-      iv?: string;
-      mac?: string;
-    }
-
     this._client = sdk.createClient({
       baseUrl: this.URL,
-      accessToken: result.access_token,
-      userId: result.user_id,
-      deviceId: result.device_id,
+      accessToken:
+        'MDAxYmxvY2F0aW9uIHBxa2x1YW4ubG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI3Y2lkIHVzZXJfaWQgPSBAbHVhbjA6cHFrbHVhbi5sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9ICxCJnBOLm5RNmg6N2U6ck8KMDAyZnNpZ25hdHVyZSCTpY8LZR33ExcOkYMSqxAS3SxMikCBo8bUm9ZR3hD7ego',
+      userId: '@luan0:pqkluan.local',
+      deviceId: 'node_server',
       request: request,
 
-      timelineSupport: true,
-      unstableClientRelationAggregation: true,
+      //   timelineSupport: true,
+      //   unstableClientRelationAggregation: true,
       store: new MemoryStore({ localStorage: AsyncStorage }),
       cryptoStore: new AsyncCryptoStore(AsyncStorage),
       sessionStore: webStorageSessionStore,
 
-      // cryptoCallbacks: {
-      //   async getSecretStorageKey(
-      //     keys: { keys: Record<string, ISecretStorageKeyInfo> },
-      //     name: string,
-      //   ): Promise<[string, Uint8Array]> {
-      //     // const cli = MatrixClientPeg.get();
-      //     // let keyId = await this._client.getDefaultSecretStorageKeyId();
+      cryptoCallbacks: {
+        getSecretStorageKey: async ({ keys: keyInfos }) => {
+          // Figure out the storage key id + info
+          const keyId = await (async () => {
+            const defaultKeyId = await this._client.getDefaultSecretStorageKeyId();
+            // Use the default SSSS key if set
+            if (defaultKeyId) return defaultKeyId;
 
-      //     // const key = await inputToKey(SecurityKey);
+            // If no default SSSS key is set, fall back to a heuristic of using the only available key, if only one key is set
+            const keys = Object.keys(keyInfos);
 
-      //     // // Save to cache to avoid future prompts in the current session
-      //     // cacheSecretStorageKey(keyId, keyInfo, key);
+            if (keys.length > 1) throw new Error('Multiple storage key requests not implemented');
 
-      //     // return [keyId, key];
+            return keys[0];
+          })();
 
-      //     console.log('pqkluan', '==================');
-      //     return ['', new Uint8Array()];
-      //   },
-      // },
+          if (!keyId) throw new Error('No available key id found');
+
+          const key = decodeRecoveryKey(
+            'EsTE CrMt W3xt AtzQ kfDw 1ceS JsNX kD61 q3Fw KWFJ 2dwE TTEf',
+          );
+
+          return [keyId, key];
+        },
+      },
     });
 
-    return result;
+    return {
+      user_id: this._client.getUserId(),
+    };
   }
 
   public async logout(): Promise<void> {
@@ -155,42 +156,76 @@ class _MatrixService {
   }
 
   onSyncCompleted(callback: () => void) {
-    this._client.once('sync', (state: string) => state === 'PREPARED' && callback());
+    this._client.once('sync', (state: string) => {
+      if (state !== 'PREPARED') return;
+      callback();
+
+      this._client.on('Room.timeline', async (event, room) => {
+        const eventType = event.getType();
+
+        switch (eventType) {
+          case 'm.room.message': {
+            console.log('(%s) %s: %s', room.name, event.getSender(), event.getContent().body);
+            break;
+          }
+          case 'm.room.encrypted': {
+            const decryptedEvent = await this._client._crypto.decryptEvent(event);
+            console.log(
+              '(%s) %s: %s',
+              room.name,
+              event.getSender(),
+              decryptedEvent.clearEvent.content.body,
+            );
+            break;
+          }
+          case 'm.presence':
+          case 'm.fully_read':
+          case 'm.receipt':
+          case 'm.typing': {
+            // Do nothing
+            break;
+          }
+          default: {
+            console.log(eventType);
+          }
+        }
+      });
+    });
   }
 
   public async startClient() {
     await this._client.initCrypto();
 
-    try {
-      let backupInfo = await this._client.getKeyBackupVersion();
-
-      if (backupInfo) await this._client.bootstrapSecretStorage();
-
-      // enableKeyBackup tells the client to back up the keys it receives to the server
-      // await this._client.enableKeyBackup(backupInfo);
-
-      // I am not sure if we could use the backupInfo from getKeyBackupVersion()
-      // let response = await this._client.checkKeyBackup();
-      // console.log('pqkluan', '3', response);
-
-      // restoreKeyBackupWithCache fetches the keys from the backup.
-      // let recoverInfo = await this._client.restoreKeyBackupWithCache(
-      //   undefined,
-      //   undefined,
-      //   response.backupInfo,
-      // );
-      // console.log('pqkluan', '4', recoverInfo);
-
-      // if (recoverInfo && recoverInfo.total > recoverInfo.imported) console.log('pqkluan5');
-      // Warnig (recoverInfo.total - recoverInfo.imported) sessions could not be recovered
-    } catch (error) {
-      console.error(error);
-    }
-
     await this._client.startClient({
       initialSyncLimit: 6,
-      lazyLoadMembers: true,
+      //   lazyLoadMembers: true,
     });
+
+    // TODO: check for the need of recovery
+    try {
+      const backupInfo = await this._client.getKeyBackupVersion();
+
+      await this._client.bootstrapSecretStorage();
+      console.log('bootstrapSecretStorage completed');
+
+      this._client.enableKeyBackup(backupInfo);
+
+      const response = await this._client.checkKeyBackup();
+      console.log('checkKeyBackup', response);
+
+      const recoverInfo = await this._client.restoreKeyBackupWithCache(
+        undefined,
+        undefined,
+        response.backupInfo,
+      );
+      console.log('restoreKeyBackupWithCache', recoverInfo);
+
+      if (recoverInfo.total > recoverInfo.imported) console.log('Not all sessions recovered');
+      else console.log('Recovered finished');
+    } catch (error) {
+      console.log('Failed to recover');
+      console.error(error);
+    }
   }
 
   public stopClient(): void {
@@ -210,12 +245,38 @@ class _MatrixService {
   }
 
   public listenToRoomEvents(roomId: string, callback: (e: sdk.RawEvent) => void): () => void {
-    const listener = (event: sdk.MatrixEvent) => {
-      if (event.getType() !== 'm.room.message') return;
-      const rawEvent = event.event as RawEvent;
-      if (rawEvent.room_id !== roomId) return;
+    const listener = async (event: sdk.MatrixEvent, room) => {
+      if (room.id !== roomId) return;
+      const eventType = event.getType();
 
-      callback(rawEvent);
+      switch (eventType) {
+        case 'm.room.message': {
+          console.log('(%s) %s: %s', room.name, event.getSender(), event.getContent().body);
+          callback(event);
+          break;
+        }
+        case 'm.room.encrypted': {
+          const decryptedEvent = await this._client._crypto.decryptEvent(event);
+          console.log(
+            '(%s) %s: %s',
+            room.name,
+            event.getSender(),
+            decryptedEvent.clearEvent.content.body,
+          );
+          callback(decryptedEvent);
+          break;
+        }
+        case 'm.presence':
+        case 'm.fully_read':
+        case 'm.receipt':
+        case 'm.typing': {
+          // Do nothing
+          break;
+        }
+        default: {
+          console.log(eventType);
+        }
+      }
     };
 
     this._client.on('Room.timeline', listener);

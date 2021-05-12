@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "asyncstorage-down": "^4.2.0",
-    "buffer": "^6.0.3",
     "events": "^3.3.0",
     "fbemitter": "^3.0.0",
     "olm": "https://packages.matrix.org/npm/olm/olm-3.2.1.tgz",

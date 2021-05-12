@@ -123,9 +123,11 @@ class AsyncTxn {
 export default class AsyncCryptoStore {
   // TODO: fix this
   private asyncStorage: any;
+  private _sharedHistoryInboundGroupSessions: Record<string, any>;
 
   constructor(asyncStorageClass) {
     this.asyncStorage = asyncStorageClass;
+    this._sharedHistoryInboundGroupSessions = {};
   }
 
   public startup(): void {}
@@ -529,5 +531,15 @@ export default class AsyncCryptoStore {
 
   async _setJsonItem(key: string, value: string) {
     return this.asyncStorage.setItem(key, JSON.stringify(value));
+  }
+
+  addSharedHistoryInboundGroupSession(roomId: string, senderKey: string, sessionId: string): void {
+    const sessions = this._sharedHistoryInboundGroupSessions[roomId] || [];
+    sessions.push([senderKey, sessionId]);
+    this._sharedHistoryInboundGroupSessions[roomId] = sessions;
+  }
+
+  getSharedHistoryInboundGroupSessions(roomId: string) {
+    return Promise.resolve(this._sharedHistoryInboundGroupSessions[roomId] || []);
   }
 }

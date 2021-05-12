@@ -50,7 +50,7 @@ export function ChatRoomScreen(props: Props): JSX.Element {
           })}
 
         {msgs.map((event) => {
-          return <Text key={event.event_id}>{event.content.body}</Text>;
+          return <Text key={event.event_id}>{JSON.stringify(event)}</Text>;
         })}
       </View>
     </>
